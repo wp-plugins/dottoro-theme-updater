@@ -40,6 +40,12 @@ You can request a service key on your account page on Dottoro.com under <a href=
 
 == Changelog ==
 
+= 1.0.3 =
+* site id bug fix
+
+= 1.0.1 =
+* readme.txt update
+
 = 1.0 =
 * Initial version
 * WordPress 3.2.1 compatible.
