@@ -5,9 +5,10 @@ Requires at least: 3.2
 Tested up to: 3.2.1
 Stable tag: 1.0
 
+Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
 
 == Description ==
-Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
+The Dottoro Theme Updater plugin notifies you about the available theme updates, but maybe even more important, it ensures updating the skins along with the themes.
 
 You will find the available theme updates among the default WordPress Theme updates, where you can update your themes in the standard way.
 
