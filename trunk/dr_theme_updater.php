@@ -3,7 +3,7 @@
 Plugin Name: Dottoro Theme Updater
 Plugin URI: http://wordpress.org/extend/plugins/dottoro-theme-updater/
 Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
-Version: 1.0
+Version: 1.0.1
 Author: Dottoro.com
 Author URI: http://themeeditor.dottoro.com
 Network: true
