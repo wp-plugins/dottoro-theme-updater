@@ -3,7 +3,7 @@
 Plugin Name: Dottoro Theme Updater
 Plugin URI: http://wordpress.org/extend/plugins/dottoro-theme-updater/
 Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
-Version: 1.0.2
+Version: 1.0.3
 Author: Dottoro.com
 Author URI: http://themeeditor.dottoro.com
 Network: true
@@ -466,7 +466,7 @@ class Dottoro_Theme_Updater
 				if ($wp_filesystem->is_file ( $site_folder . 'style_skin.css' ) && $wp_filesystem->is_file ( $site_folder . 'skin_settings.php' ) ) {
 					$file_content = $this->get_skin_data ( $site_folder . 'skin_settings.php' );
 					if ( ! empty ( $file_content ) ) {
-						$site_skins["". $blog_id] = $file_content;
+						$site_skins["site_". $blog_id] = $file_content;
 					}
 				}
 			}
@@ -479,7 +479,7 @@ class Dottoro_Theme_Updater
 			if ($wp_filesystem->is_file ( $site_folder . 'style_skin.css' ) && $wp_filesystem->is_file ( $site_folder . 'skin_settings.php' ) ) {
 				$file_content = $this->get_skin_data ( $site_folder . 'skin_settings.php' );
 				if ( ! empty ( $file_content ) ) {
-					$site_skins["". $blog_id] = $file_content;
+					$site_skins["site_". $blog_id] = $file_content;
 				}
 			}
 		}
