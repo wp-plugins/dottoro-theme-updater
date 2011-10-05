@@ -1,4 +1,4 @@
-=== Dottoro Syntax Highlighter ===
+=== Dottoro Theme Updater ===
 Contributors: dottoro
 Tags: dottoro, theme, update, updater, skin
 Requires at least: 3.2
