@@ -3,7 +3,7 @@
 Plugin Name: Dottoro Theme Updater
 Plugin URI: http://wordpress.org/extend/plugins/dottoro-theme-updater/
 Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
-Version: 1.2
+Version: 1.3
 Author: Dottoro.com
 Author URI: http://themeeditor.dottoro.com
 Network: true
@@ -82,7 +82,9 @@ class Dottoro_Theme_Updater
 			wp_die ( __('You do not have sufficient permissions to see this page.', 'dottoro_updater') );
 		}
 
+		$_POST = stripslashes_deep( $_POST );
 		$form_saved = $this->process_form();
+
 
 		$service_key = get_site_option ($this->option_service_key);
 	?>
@@ -135,13 +137,61 @@ class Dottoro_Theme_Updater
 					<?php _e("<b>Important:</b> The service key is a security code; treat it like you treat your passwords. With the service key, anyone can download and modify your skins. If you suspect that someone might have got access to your service key, delete it and request a new one on your account page on Dottoro.com.", 'dottoro_updater'); ?>
 				</div>
 			</div>
+
+			<div style="margin-top:40px;">
+				<h4><?php _e("Dottoro Theme Updater checks for updates every 12 hours.", 'dottoro_updater'); ?></h4>
+				<?php _e("If you want to force it to check for updates immediately, click on this button:", 'dottoro_updater'); ?>
+				
+				<form method="post" action="" style="margin-top:10px;">
+					<input type="hidden" name="check_updates" value="1" />
+					<input type="submit" class="button" value="<?php _e ("Check Now", 'dottoro_updater'); ?>" />
+				</form>
+				<?php 
+					if (isset ( $_POST['check_updates'] )) :
+				?>
+				<div style="margin-top: 10px;">
+				<?php 
+						$response = $this->check_theme_update (true);
+						if ($this->is_any_obsolete ( $response )) {
+							$themes = get_themes();
+							_e("<b>The following themes have new versions available:</b>", 'dottoro_updater');
+							echo ('<ul>');
+							foreach ( $response['themes'] as $template => $args ) {
+								echo ('<li>');
+								$simple = true;
+								if ($themes) {
+									foreach ( $themes as $theme ) {
+										$theme = (object) $theme;
+										if ( $theme->Stylesheet == $template ) {
+											$screenshot = $theme->{'Theme Root URI'} . '/' . $template . '/' . $theme->Screenshot;
+											echo ("<img src='$screenshot' width='64' height='64' style='float:left; padding: 0 5px 5px' /><strong>{$theme->Name}</strong><div class='clear'></div>");
+											$simple = false;
+										}
+									}
+								}
+								if ($simple) {
+									echo ($template . '</li>');
+								}
+								echo ('</li>');
+							}
+							echo ('</ul>');
+							printf ( __('Go to <a href="%1$s">WordPress Updates</a> to update your themes.', 'dottoro_updater'), esc_url (admin_url('update-core.php')) );
+						}
+						else {
+							_e("<b>No updates were found.</b>");
+						}
+				?>
+				</div>
+				<?php 
+					endif;
+				?>
+			</div>
 		</div>
 	<?php
 	}
 
 	function process_form ()
 	{
-		$_POST = stripslashes_deep( $_POST );
 		if ( isset( $_POST['dottoro_theme_submit'] ) && $_POST['dottoro_theme_submit'] == 'theme_updater' ) {
 			if ( ! isset( $_POST['service_key'] ) ) {
 				return;

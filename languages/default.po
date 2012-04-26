@@ -2,65 +2,90 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dottoro Updater\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-19 01:44+0100\n"
-"PO-Revision-Date: 2011-08-19 01:45+0100\n"
-"Last-Translator: Dottoro\n"
+"POT-Creation-Date: 2012-04-14 21:15+0100\n"
+"PO-Revision-Date: 2012-04-14 21:15+0100\n"
+"Last-Translator: Dottoro <info@dottoro.com>\n"
 "Language-Team: Dottoro <info@dottoro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _;__;_e\n"
-"X-Poedit-Basepath: C:\\xampp\\htdocs\\wordpress-dev.com\\wp-content\\plugins\n"
-"X-Poedit-SearchPath-0: dottoro-theme-updater\n"
+"X-Poedit-Basepath: ./../\n"
+"X-Poedit-SearchPath-0: .\n"
 
-#: dottoro-theme-updater/dr_theme_updater.php:70
-#: dottoro-theme-updater/dr_theme_updater.php:74
+#: dottoro-theme-updater.php:72
+#: dottoro-theme-updater.php:76
 msgid "Dottoro Updater"
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:80
+#: dottoro-theme-updater.php:82
 msgid "You do not have sufficient permissions to see this page."
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:94
+#: dottoro-theme-updater.php:98
 msgid "Dottoro Theme Updater"
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:97
+#: dottoro-theme-updater.php:101
 #, php-format
 msgid "You need a service key to use Dottoro Theme Updater. You can request a service key on your account page on Dottoro.com under <a href=\"%1$s\" target=\"_blank\">Service Keys</a>"
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:103
+#: dottoro-theme-updater.php:107
 msgid "Service Key Saved. Thank You."
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:114
+#: dottoro-theme-updater.php:118
 msgid "Service Key"
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:120
+#: dottoro-theme-updater.php:124
 msgid "Here you can set your service key."
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:129
+#: dottoro-theme-updater.php:133
 msgid "Save Service Key"
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:133
+#: dottoro-theme-updater.php:137
 msgid "<b>Important:</b> The service key is a security code; treat it like you treat your passwords. With the service key, anyone can download and modify your skins. If you suspect that someone might have got access to your service key, delete it and request a new one on your account page on Dottoro.com."
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:349
+#: dottoro-theme-updater.php:142
+msgid "Dottoro Theme Updater checks for updates every 12 hours."
+msgstr ""
+
+#: dottoro-theme-updater.php:143
+msgid "If you want to force it to check for updates immediately, click on this button:"
+msgstr ""
+
+#: dottoro-theme-updater.php:147
+msgid "Check Now"
+msgstr ""
+
+#: dottoro-theme-updater.php:157
+msgid "<b>The following themes have new versions available:</b>"
+msgstr ""
+
+#: dottoro-theme-updater.php:178
+#, php-format
+msgid "Go to <a href=\"%1$s\">WordPress Updates</a> to update your themes."
+msgstr ""
+
+#: dottoro-theme-updater.php:181
+msgid "<b>No updates were found.</b>"
+msgstr ""
+
+#: dottoro-theme-updater.php:400
 #, php-format
 msgid "Theme %s not found."
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:369
+#: dottoro-theme-updater.php:420
 msgid "Could not create Temporary file."
 msgstr ""
 
-#: dottoro-theme-updater/dr_theme_updater.php:375
+#: dottoro-theme-updater.php:426
 msgid "No skins found."
 msgstr ""
 
