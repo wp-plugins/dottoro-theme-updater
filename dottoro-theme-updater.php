@@ -3,7 +3,7 @@
 Plugin Name: Dottoro Theme Updater
 Plugin URI: http://wordpress.org/extend/plugins/dottoro-theme-updater/
 Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
-Version: 1.3
+Version: 1.4
 Author: Dottoro.com
 Author URI: http://themeeditor.dottoro.com
 Network: true
@@ -492,11 +492,8 @@ class Dottoro_Theme_Updater
 			return false;
 		}
 
-		WP_Filesystem ();
-		global $wp_filesystem;
-
 		$skins_folder = $template_dir . DIRECTORY_SEPARATOR . 'skins';
-		if ( ! $wp_filesystem->is_dir ( $skins_folder ) ) {
+		if ( ! @is_dir ( $skins_folder ) ) {
 			return false;
 		}
 
@@ -512,11 +509,9 @@ class Dottoro_Theme_Updater
 			$result = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs");
 			foreach ( $result as $blog_id ) {
 				$site_folder = $sites_folder . $blog_id . DIRECTORY_SEPARATOR;
-				if ($wp_filesystem->is_file ( $site_folder . 'style_skin.css' ) && $wp_filesystem->is_file ( $site_folder . 'skin_settings.php' ) ) {
-					$file_content = $this->get_skin_data ( $site_folder . 'skin_settings.php' );
-					if ( ! empty ( $file_content ) ) {
-						$site_skins["site_". $blog_id] = $file_content;
-					}
+				$file_content = $this->get_skin_data ( $site_folder . 'skin_settings.php' );
+				if ( ! empty ( $file_content ) ) {
+					$site_skins["site_". $blog_id] = $file_content;
 				}
 			}
 		}
@@ -525,22 +520,15 @@ class Dottoro_Theme_Updater
 				// and network_id as site_id
 			$blog_id = 1;
 			$site_folder = $sites_folder . $blog_id . DIRECTORY_SEPARATOR;
-			if ($wp_filesystem->is_file ( $site_folder . 'style_skin.css' ) && $wp_filesystem->is_file ( $site_folder . 'skin_settings.php' ) ) {
-				$file_content = $this->get_skin_data ( $site_folder . 'skin_settings.php' );
-				if ( ! empty ( $file_content ) ) {
-					$site_skins["site_". $blog_id] = $file_content;
-				}
+			$file_content = $this->get_skin_data ( $site_folder . 'skin_settings.php' );
+			if ( ! empty ( $file_content ) ) {
+				$site_skins["site_". $blog_id] = $file_content;
 			}
 		}
 
-			// get the default skin, placed theme root / skins / default folder
-		$default_folder = $skins_folder . DIRECTORY_SEPARATOR .'default'. DIRECTORY_SEPARATOR .'skin_settings.php';
-		if ($wp_filesystem->is_file ( $default_folder . 'style_skin.css' ) && $wp_filesystem->is_file ( $default_folder . 'skin_settings.php' ) ) {
-			$file_content = $this->get_skin_data ( $default_folder . 'skin_settings.php' );
-			if ( ! empty ( $file_content ) ) {
-				$default = $file_content;
-			}
-		}
+			// get the default skin, located under / skins / default
+		$default_folder = $skins_folder . DIRECTORY_SEPARATOR .'default'. DIRECTORY_SEPARATOR;
+		$default = $this->get_skin_data ( $default_folder . 'skin_settings.php' );
 
 		return array ( 'site_skins' => $site_skins, 'default' => $default );
 	}
