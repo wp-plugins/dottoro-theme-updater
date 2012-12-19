@@ -2,8 +2,8 @@
 /*
 Plugin Name: Dottoro Theme Updater
 Plugin URI: http://wordpress.org/extend/plugins/dottoro-theme-updater/
-Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
-Version: 1.4
+Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones. <a href="themes.php?page=dottoro-theme-updater/dottoro-theme-updater.php">Theme Updater configuration page</a>
+Version: 1.5
 Author: Dottoro.com
 Author URI: http://themeeditor.dottoro.com
 Network: true
@@ -14,7 +14,7 @@ Tags: dottoro, theme, updater, update
 */
 
 /*
-Copyright 2010  Dottoro.com  (email : info@dottoro.com)
+Copyright 2012  Dottoro.com  (email : info@dottoro.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
@@ -39,6 +39,8 @@ class Dottoro_Theme_Updater
 	{
 		$this->plugin_path = plugin_basename(__FILE__);
 		$this->option_service_key = 'dottoro_updater_service_key';
+		$this->service_key_cookie = 'dottoro_updater_service_key';
+		$this->settings_option_key = 'dottoro_updater_settings';
 		$this->theme_update_option_key = 'dottoro_theme_updates';
 
 		$this->editor_url = 'http://themeeditor.dottoro.com/';
@@ -46,6 +48,8 @@ class Dottoro_Theme_Updater
 		$this->editor_download_url = $this->editor_api_url . 'downloadPackage.php';
 		$this->dummy_download_url = $this->editor_api_url . 'downloadDummy.php';
 		$this->editor_docs_url = $this->editor_url . 'docs/';
+
+		$this->form_saved = false;
 
 			// languages files
 		load_plugin_textdomain('dottoro_updater', false, basename( dirname( __FILE__ ) ) . '/languages' );
@@ -55,6 +59,7 @@ class Dottoro_Theme_Updater
 			add_action ( 'network_admin_menu', array( &$this, 'add_mu_menus' ) );
 		} else {
 				// single menu
+			add_action ( 'admin_init', array (&$this, 'init_admin') );
 			add_action ( 'admin_menu', array (&$this, 'add_menus') );
 		}
 
@@ -66,6 +71,11 @@ class Dottoro_Theme_Updater
 
 			// add filter to HTTP Request
 		add_filter( 'pre_http_request', array( &$this, 'change_request' ), 10, 3 );
+	}
+
+	function init_admin () {
+		$_POST = stripslashes_deep( $_POST );
+		$this->form_saved = $this->process_form();
 	}
 
 	function add_mu_menus () {
@@ -82,11 +92,11 @@ class Dottoro_Theme_Updater
 			wp_die ( __('You do not have sufficient permissions to see this page.', 'dottoro_updater') );
 		}
 
-		$_POST = stripslashes_deep( $_POST );
-		$form_saved = $this->process_form();
-
-
-		$service_key = get_site_option ($this->option_service_key);
+		$settings = $this->get_settings ();
+		$service_key = $this->get_service_key ();
+		if ($this->form_saved) {
+			$service_key = $_POST['service_key'];
+		}
 	?>
 		<style>
 			.notice {
@@ -103,7 +113,7 @@ class Dottoro_Theme_Updater
 			</p>
 
 			<?php
-				if ( $form_saved ) {
+				if ( $this->form_saved ) {
 					echo('<p class="notice">' . __('Service Key Saved. Thank You.', 'dottoro_updater') . '</p>');
 				}
 			?>
@@ -122,6 +132,19 @@ class Dottoro_Theme_Updater
 									<input name="service_key" class="service_key" id="service_key" value="<?php echo esc_attr ($service_key); ?>" type="text" style=" width:300px;"/>
 									<div>
 										<small><?php __('Here you can set your service key.', 'dottoro_updater'); ?></small>
+									</div>
+								</td>
+							</tr>
+							<tr valign="top">
+								<th scope="row">
+									<label for="save_in_cookie">
+										<?php _e('Store service key in a cookie', 'dottoro_updater'); ?>
+									</label>
+								</th>
+								<td>
+									<input name="save_in_cookie" id="save_in_cookie" <?php checked ($settings['save_in_cookie']); ?> type="checkbox"/>
+									<div>
+										<small><?php __('Check if you want to store the service key in a cookie. Please select this checkbox, if you want to give someone full control of the site to ensure the security of your service key. The cookie is deleted on logout.', 'dottoro_updater'); ?></small>
 									</div>
 								</td>
 							</tr>
@@ -196,13 +219,94 @@ class Dottoro_Theme_Updater
 			if ( ! isset( $_POST['service_key'] ) ) {
 				return;
 			}
-			update_site_option ( $this->option_service_key, trim ( $_POST['service_key'] ) );
+
+			$settings = $this->save_settings ( $_POST );
+			$this->set_service_key ( trim ( $_POST['service_key'] ), $settings['save_in_cookie'] );
 			return true;
 		}
 		return false;
 	}
 
+	function get_settings ()
+	{
+		$settings = array (
+			'save_in_cookie' => false,
+		);
+		
+		$saved_settings = get_site_option ($this->settings_option_key);
+		if ($saved_settings) {
+			$settings = array_merge ($settings, $saved_settings);
+		}
+		return $settings;
+	}
 
+	function save_settings ( $datas = array () )
+	{
+		$settings = array (
+			'save_in_cookie' => false,
+		);
+
+		if ( isset( $datas['save_in_cookie'] ) ) {
+			$settings['save_in_cookie'] = true;
+		}
+		update_site_option ( $this->settings_option_key, $settings );
+		
+		return $settings;
+	}
+
+	function get_service_key ( )
+	{
+		$service_key = '';
+		$settings = $this->get_settings ();
+		if ( $settings['save_in_cookie'] ) {
+			if ( isset ($_COOKIE[$this->service_key_cookie]) && $_COOKIE[$this->service_key_cookie] ) {
+				$service_key = $_COOKIE[$this->service_key_cookie];
+				$service_key = $this->basic_decrypt ($service_key);
+			}
+		} else {
+			$service_key = get_site_option ($this->option_service_key);
+		}
+		return $service_key;
+	} 
+
+	function set_service_key ( $service_key, $in_cookie = false )
+	{
+		$service_key = $service_key ? $service_key : '';
+
+		if ( $in_cookie ) {
+			$service_key = $this->basic_encrypt ($service_key);
+			setcookie ($this->service_key_cookie, $service_key, 0, SITECOOKIEPATH, COOKIE_DOMAIN, false, true);
+			return delete_site_option ( $this->option_service_key );
+		}
+
+		setcookie ($this->service_key_cookie, "", time() - 3600, SITECOOKIEPATH, COOKIE_DOMAIN, false, true);
+		return update_site_option ( $this->option_service_key, trim ( $service_key ) );
+	} 
+
+	function basic_encrypt ( $str, $key = '' )
+	{
+		$key = $this->get_basic_crypt_key ( $key );
+		$iv_size = mcrypt_get_iv_size ( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB );
+		$iv = mcrypt_create_iv ( $iv_size, MCRYPT_RAND );
+		return base64_encode ( mcrypt_encrypt ( MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv ) );
+	}
+
+	function basic_decrypt ( $str, $key = '' )
+	{
+		$key = $this->get_basic_crypt_key ( $key );
+		$iv_size = mcrypt_get_iv_size ( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB );
+		$iv = mcrypt_create_iv ( $iv_size, MCRYPT_RAND );
+		return rtrim ( mcrypt_decrypt ( MCRYPT_RIJNDAEL_256, $key, base64_decode ($str), MCRYPT_MODE_ECB, $iv ), "\0" );
+	}
+
+	function get_basic_crypt_key ( $key = '' )
+	{
+		if ($key == '') {
+			$key = wp_salt ();
+			$key = substr ($key, 0, mcrypt_get_key_size (MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC));
+		}
+		return $key;
+	}
 
 /**************************
 *   Theme updates check   *
@@ -426,7 +530,7 @@ class Dottoro_Theme_Updater
 			return new WP_Error( 'dottoro_no_skins', __('No skins found.') );
 		}
 
-		$service_key = get_site_option ( $this->option_service_key );
+		$service_key = $this->get_service_key ();
 
 		$settings = array (
 			'body' 		=> array (

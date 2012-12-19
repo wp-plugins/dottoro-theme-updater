@@ -2,8 +2,8 @@
 Contributors: dottoro
 Tags: dottoro, theme, update, updater, skin
 Requires at least: 3.2
-Tested up to: 3.3.2
-Stable tag: 1.4
+Tested up to: 3.5
+Stable tag: 1.5
 
 Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones.
 
@@ -39,6 +39,9 @@ You can request a service key on your account page on Dottoro.com under <a href=
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.5 =
+* new option added: Store service key in a cookie
 
 = 1.4 =
 * skin settings update fix
