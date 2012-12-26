@@ -3,7 +3,7 @@
 Plugin Name: Dottoro Theme Updater
 Plugin URI: http://wordpress.org/extend/plugins/dottoro-theme-updater/
 Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones. <a href="themes.php?page=dottoro-theme-updater/dottoro-theme-updater.php">Theme Updater configuration page</a>
-Version: 1.5
+Version: 1.6
 Author: Dottoro.com
 Author URI: http://themeeditor.dottoro.com
 Network: true
@@ -74,7 +74,6 @@ class Dottoro_Theme_Updater
 	}
 
 	function init_admin () {
-		$_POST = stripslashes_deep( $_POST );
 		$this->form_saved = $this->process_form();
 	}
 
@@ -152,7 +151,7 @@ class Dottoro_Theme_Updater
 					</table>
 
 					<p>
-						<input type="hidden" name="dottoro_theme_submit" value="theme_updater" />
+						<input type="hidden" name="dottoro_theme_updater_submit" value="theme_updater" />
 						<input type="submit" name="submit" class="button-primary autowidth" value="<?php _e('Save Service Key', 'dottoro_updater'); ?>" style="outline:none;" />
 					</p>
 				</form>
@@ -215,11 +214,12 @@ class Dottoro_Theme_Updater
 
 	function process_form ()
 	{
-		if ( isset( $_POST['dottoro_theme_submit'] ) && $_POST['dottoro_theme_submit'] == 'theme_updater' ) {
+		if ( isset( $_POST['dottoro_theme_updater_submit'] ) && $_POST['dottoro_theme_updater_submit'] == 'theme_updater' ) {
 			if ( ! isset( $_POST['service_key'] ) ) {
 				return;
 			}
 
+			$_POST = stripslashes_deep( $_POST );
 			$settings = $this->save_settings ( $_POST );
 			$this->set_service_key ( trim ( $_POST['service_key'] ), $settings['save_in_cookie'] );
 			return true;
