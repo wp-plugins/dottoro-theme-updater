@@ -2,8 +2,8 @@
 /*
 Plugin Name: Dottoro Theme Updater
 Plugin URI: http://wordpress.org/extend/plugins/dottoro-theme-updater/
-Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones. <a href="themes.php?page=dottoro-theme-updater/dottoro-theme-updater.php">Theme Updater configuration page</a>
-Version: 1.6
+Description: Dottoro Updater plugin is an automation tool to update your Dottoro themes migrating their actual skin settings to the updated ones. <a href="themes.php?page=dottoro-theme-updater/dottoro-theme-updater.php">Configuration page</a> - <a href="plugins.php?page=dottoro-theme-updater/dottoro-theme-updater.php">Multisite configuration page</a>
+Version: 1.7
 Author: Dottoro.com
 Author URI: http://themeeditor.dottoro.com
 Network: true
@@ -54,12 +54,12 @@ class Dottoro_Theme_Updater
 			// languages files
 		load_plugin_textdomain('dottoro_updater', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
+		add_action ( 'admin_init', array (&$this, 'init_admin') );
 		if ( function_exists ( 'is_multisite' ) && is_multisite () ) {
 				// multisite menu
 			add_action ( 'network_admin_menu', array( &$this, 'add_mu_menus' ) );
 		} else {
 				// single menu
-			add_action ( 'admin_init', array (&$this, 'init_admin') );
 			add_action ( 'admin_menu', array (&$this, 'add_menus') );
 		}
 
